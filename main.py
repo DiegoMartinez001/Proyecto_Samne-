@@ -26,33 +26,49 @@ def generar_codigo():
             mayor = numero
     return "TRA-" + str(mayor + 1).zfill(4)
  
+
+from datetime import datetime
+
+def validar_fecha(fecha):
+    try:
+        datetime.strptime(fecha, "%d/%m/%Y")
+        return True
+    except ValueError:
+        return False
+
+
 def registrar_tramite():
     print("\n--- REGISTRAR TRÁMITE ---")
     fecha = input("Fecha de recepción (dd/mm/aaaa): ").strip()
- 
+
+    while not validar_fecha(fecha):
+        print("Fecha incorrecta. Ingrese una fecha válida.")
+        fecha = input("Fecha de recepción (dd/mm/aaaa): ").strip()
+
     dni = input("DNI: ").strip()
     while len(dni) != 8 or not dni.isdigit():
         print("El DNI debe tener 8 dígitos.")
         dni = input("DNI: ").strip()
- 
+
     nombre = input("Nombre del solicitante: ").strip()
     tipo = input("Tipo de trámite: ").strip()
     asunto = input("Asunto: ").strip()
- 
-    if fecha == "" or nombre == "" or tipo == "" or asunto == "":
+
+    if nombre == "" or tipo == "" or asunto == "":
         print("No se puede registrar. Existen campos obligatorios vacíos.")
         return
- 
+
     codigo = generar_codigo()
     estado = "PENDIENTE"
     fecha_entrega = "-"
- 
+
     nuevo = [codigo, fecha, dni, nombre, tipo, asunto, estado, fecha_entrega]
     tramites.append(nuevo)
     guardar_datos()
- 
+
     print("Trámite registrado correctamente.")
     print("Código:", codigo)
+
  
 def buscar_por_dni():
     print("\n--- CONSULTA POR DNI ---")
@@ -97,10 +113,13 @@ def actualizar_estado():
                 print("El trámite ya figura como entregado.")
                 return
  
+           
             fecha = input("Fecha de entrega (dd/mm/aaaa): ").strip()
-            if fecha == "":
-                print("Debe ingresar la fecha de entrega.")
-                return
+
+            while not validar_fecha(fecha):
+                print("Fecha incorrecta. Ingrese una fecha válida.")
+                fecha = input("Fecha de entrega (dd/mm/aaaa): ").strip()
+
  
             t[6] = "ENTREGADO"
             t[7] = fecha
