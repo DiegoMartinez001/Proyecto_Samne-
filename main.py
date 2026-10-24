@@ -36,13 +36,34 @@ def validar_fecha(fecha):
     except ValueError:
         return False
 
+def validar_fecha_recepcion(fecha):
+    if not validar_fecha(fecha):
+        return False
 
+    fecha_ingresada = datetime.strptime(fecha, "%d/%m/%Y").date()
+    fecha_actual = datetime.now().date()
+
+    if fecha_ingresada > fecha_actual:
+        return False
+    return True
+def validar_fecha_entrega(fecha_entrega, fecha_recepcion):
+    if not validar_fecha(fecha_entrega):
+        return False
+
+    entrega = datetime.strptime(fecha_entrega, "%d/%m/%Y").date()
+    recepcion = datetime.strptime(fecha_recepcion, "%d/%m/%Y").date()
+    hoy = datetime.now().date()
+
+    if entrega < recepcion or entrega > hoy:
+        return False
+
+    return True
 def registrar_tramite():
     print("\n--- REGISTRAR TRÁMITE ---")
     fecha = input("Fecha de recepción (dd/mm/aaaa): ").strip()
 
-    while not validar_fecha(fecha):
-        print("Fecha incorrecta. Ingrese una fecha válida.")
+    while not validar_fecha_recepcion(fecha):
+        print("Fecha incorrecta. No se permiten fechas futuras ni inválidas.")
         fecha = input("Fecha de recepción (dd/mm/aaaa): ").strip()
 
     dni = input("DNI: ").strip()
@@ -116,8 +137,8 @@ def actualizar_estado():
            
             fecha = input("Fecha de entrega (dd/mm/aaaa): ").strip()
 
-            while not validar_fecha(fecha):
-                print("Fecha incorrecta. Ingrese una fecha válida.")
+            while not validar_fecha_entrega(fecha, t[1]):
+                print("Fecha incorrecta. La entrega no puede ser anterior a la recepción ni posterior a hoy.")
                 fecha = input("Fecha de entrega (dd/mm/aaaa): ").strip()
 
  
