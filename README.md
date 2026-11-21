@@ -1,129 +1,104 @@
-# Sistema de Registro y Seguimiento de Trámites Municipales
+# Sistema de Registro y Seguimiento de Trámites Municipales – Samne
 
-## 1. Descripción del proyecto
+Prototipo académico en Python para registrar, consultar, ordenar y dar seguimiento
+a los trámites de la **Municipalidad del Centro Poblado de Samne** (Otuzco, La Libertad),
+que hoy se llevan a mano en cuadernos de cargo. Funciona en consola y **sin Internet**.
 
-El presente proyecto consiste en el desarrollo de un prototipo de sistema de registro y seguimiento de trámites para la Municipalidad del Centro Poblado de Samne.
+## Requisitos
 
-La propuesta surge ante la necesidad de mejorar el proceso de registro, búsqueda y seguimiento de solicitudes municipales, que actualmente se realiza de manera manual mediante cuadernos físicos.
+- Python **3.10 o superior** (solo usa la biblioteca estándar: no hay que instalar paquetes).
 
-El sistema está desarrollado en Python y funciona mediante un menú interactivo en la consola, sin necesidad de conexión a Internet.
-
-## 2. Objetivo
-
-Desarrollar un prototipo informático que permita registrar, consultar, organizar y actualizar el estado de los trámites municipales, facilitando la gestión de información y reduciendo la dependencia de los registros manuales.
-
-## 3. Funcionalidades del sistema
-
-El programa cuenta con seis opciones principales:
-
-1. **Registrar trámite:** permite ingresar la fecha de recepción, DNI, nombre del solicitante, tipo de trámite y asunto. Genera automáticamente un código correlativo.
-2. **Buscar trámites por DNI:** permite consultar el historial de solicitudes de un ciudadano.
-3. **Mostrar todos los trámites:** presenta los registros almacenados en el sistema.
-4. **Actualizar estado:** permite cambiar un trámite de PENDIENTE a ENTREGADO, registrando su fecha de entrega.
-5. **Ordenar registros:** organiza los trámites según el DNI del solicitante mediante el algoritmo de ordenamiento de burbuja.
-6. **Salir:** guarda la información y finaliza la ejecución del programa.
-
-## 4. Herramientas utilizadas
-
-- **Lenguaje de programación:** Python.
-- **Entorno de desarrollo:** Visual Studio Code.
-- **Control de versiones:** Git.
-- **Repositorio de código:** GitHub.
-- **Almacenamiento de datos:** archivo de texto local (TXT).
-
-## 5. Conceptos de programación aplicados
-
-El proyecto utiliza los siguientes conceptos fundamentales de programación:
-
-- Variables y tipos de datos.
-- Estructuras secuenciales.
-- Estructuras condicionales (`if`, `elif`, `else`).
-- Estructuras repetitivas (`for`, `while`).
-- Funciones.
-- Listas.
-- Validación de datos.
-- Lectura y escritura de archivos.
-- Algoritmo de ordenamiento de burbuja.
-
-## 6. Estructura del proyecto
-
-El proyecto contiene los siguientes archivos:
-
-- `main.py`: contiene el código principal del sistema.
-- `tramites_samne.txt`: almacena localmente los registros de trámites.
-- `.gitignore`: permite excluir determinados archivos del control de versiones.
-- `README.md`: contiene la documentación del proyecto.
-
-El archivo `tramites_samne.txt` se utiliza para almacenar los datos generados durante la ejecución del programa y no necesita publicarse en GitHub.
-
-## 7. Ejecución del programa
-
-Para ejecutar el sistema:
-
-1. Instalar Python en la computadora.
-2. Abrir la carpeta del proyecto en Visual Studio Code.
-3. Abrir una terminal.
-4. Ejecutar el siguiente comando:
+## Ejecución
 
 ```bash
 python main.py
 ```
 
-5. Seleccionar una opción del menú principal.
+| Opción | Acción |
+|-------|--------|
+| 1 | Registrar trámite (fecha, DNI, nombre, tipo, asunto). Genera el código `TRA-0001`, `TRA-0002`… |
+| 2 | Buscar el historial de trámites de un ciudadano por DNI |
+| 3 | Mostrar todos los trámites |
+| 4 | Marcar un trámite como ENTREGADO con su fecha de entrega |
+| 5 | Ordenar los registros por DNI (método burbuja) |
+| 6 | Guardar y salir |
 
-Los registros se almacenan localmente en el archivo `tramites_samne.txt`.
+Los datos se guardan en `tramites_samne.txt` (se crea solo en la primera ejecución).
 
-Si el archivo no existe, el programa permite comenzar con una lista vacía y lo crea al guardar los registros.
+## Pruebas
 
-## 8. Validaciones implementadas
+```bash
+python -m unittest discover -s tests -v
+```
 
-El sistema incorpora las siguientes validaciones:
+36 pruebas automáticas (casos normales, límite y de error). También se ejecutan solas
+en GitHub Actions cada vez que se hace `push` o se abre un Pull Request.
 
-**Validación de fechas:**
-- Verifica que las fechas ingresadas sean válidas.
-- No permite registrar fechas de recepción posteriores a la fecha actual.
-- No permite registrar fechas de entrega anteriores a la fecha de recepción.
-- No permite registrar fechas de entrega posteriores a la fecha actual.
+## Estructura del proyecto
 
-**Validación de datos del solicitante:**
-- Verifica que el DNI contenga exactamente ocho dígitos numéricos.
-- Comprueba que los campos de nombre, tipo de trámite y asunto no estén vacíos.
+```
+Proyecto_Samne-/
+├── main.py              # Menú en consola: pide datos y muestra resultados
+├── tramites.py          # Reglas de negocio: código, búsqueda, entrega, ordenamiento
+├── validaciones.py      # Validación de fechas, DNI y textos
+├── almacenamiento.py    # Lectura y escritura de tramites_samne.txt
+├── tests/
+│   ├── test_validaciones.py
+│   └── test_tramites.py
+├── docs/
+│   └── decisiones.md    # Registro de decisiones técnicas
+├── .github/
+│   ├── workflows/pruebas.yml        # Pruebas automáticas
+│   └── pull_request_template.md     # Lista de revisión de código
+├── .gitignore           # Excluye tramites_samne.txt (datos personales)
+└── README.md
+```
 
-**Validación de trámites:**
-- Genera automáticamente códigos correlativos.
-- Comprueba la existencia del código antes de actualizar un trámite.
-- Impide actualizar nuevamente un trámite que ya figura como ENTREGADO.
-- Guarda los cambios realizados en el archivo de texto.
+## Formato del archivo de datos
 
-## 9. Alcances y limitaciones
+Una línea por trámite, 8 campos separados por `|`:
 
-El programa constituye un prototipo académico desarrollado para demostrar la aplicación de los fundamentos de programación en una situación real.
+```
+codigo|fecha_recepcion|dni|nombre|tipo|asunto|estado|fecha_entrega
+TRA-0001|01/10/2026|45678912|Diego Martinez|Permiso|Uso de local|PENDIENTE|-
+```
 
-Funciona de manera local, sin conexión a Internet, y utiliza un archivo de texto como mecanismo de almacenamiento.
+## Validaciones
 
-El sistema permite realizar operaciones básicas de registro, consulta, actualización y organización de trámites municipales.
+- **Fechas:** formato `dd/mm/aaaa` y fecha real (no acepta `31/09/2026`).
+- **Recepción:** no puede ser posterior a hoy.
+- **Entrega:** no puede ser anterior a la recepción ni posterior a hoy.
+- **DNI:** exactamente 8 dígitos.
+- **Nombre, tipo y asunto:** obligatorios, máximo 100 caracteres y sin el carácter `|`
+  (es el separador del archivo; si se permitiera, el trámite se perdería al recargar).
+- Un trámite ENTREGADO no puede volver a entregarse.
 
-No contempla todavía autenticación de usuarios, acceso simultáneo desde varias computadoras ni copias de seguridad automáticas.
+## Seguridad y datos personales
 
-## 10. Control de versiones
+`tramites_samne.txt` contiene DNI y nombres de pobladores, por eso está en `.gitignore`
+y **nunca** se sube a GitHub. Para hacer pruebas se usan datos ficticios.
 
-Se utiliza Git para registrar los cambios realizados durante el desarrollo y GitHub para conservar el código fuente y su historial de versiones.
+## Flujo de trabajo con Git
 
-Durante el desarrollo se registraron las siguientes mejoras:
+```bash
+git checkout -b feature/nombre-de-la-mejora   # una rama por cambio
+# ... programar y ejecutar las pruebas ...
+git commit -m "feat: descripción corta del cambio"
+git push -u origin feature/nombre-de-la-mejora
+# Abrir Pull Request hacia main; se fusiona cuando las pruebas pasan y un compañero lo aprueba
+```
 
-1. Creación de la versión inicial del prototipo.
-2. Incorporación de validaciones de fecha y DNI.
-3. Elaboración de la documentación del proyecto.
-4. Implementación de restricciones adicionales para las fechas de recepción y entrega.
+Prefijos de commit: `feat:` (nueva función), `fix:` (corrección), `docs:` (documentación),
+`test:` (pruebas), `refactor:` (mejora sin cambiar el comportamiento).
 
-**Repositorio:** DiegoMartinez001/Proyecto_Samne-
+## Alcances y limitaciones
 
-## 11. Contexto académico
+Prototipo local con archivo de texto. Aún no incluye autenticación de usuarios, uso
+simultáneo desde varias computadoras ni copias de seguridad automáticas.
 
-**Curso:** Fundamentos de Programación.
+## Contexto académico
 
-**Caso de estudio:** Municipalidad del Centro Poblado de Samne, Perú.
-
-**Tipo de proyecto:** Prototipo académico de sistema de registro y seguimiento de trámites municipales.
-
-**Lenguaje de programación:** Python.
+- **Curso:** Fundamentos de Programación – Universidad Privada del Norte
+- **Docente:** Anthony Hans Delgado Chavarría
+- **Equipo:** Alegre Pereira, Jhoel Harold · Zavaleta Abanto, Piero Alessandro ·
+  Castañeda Alcántara, Hummer Sthif · Tapia Fernández, Angel Daniel · Martínez Guevara, Diego
