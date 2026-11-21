@@ -31,7 +31,7 @@ Los datos se guardan en `tramites_samne.txt` (se crea solo en la primera ejecuci
 python -m unittest discover -s tests -v
 ```
 
-36 pruebas automáticas (casos normales, límite y de error). También se ejecutan solas
+39 pruebas automáticas (casos normales, límite y de error). También se ejecutan solas
 en GitHub Actions cada vez que se hace `push` o se abre un Pull Request.
 
 ## Estructura del proyecto
@@ -69,6 +69,7 @@ TRA-0001|01/10/2026|45678912|Diego Martinez|Permiso|Uso de local|PENDIENTE|-
 - **Recepción:** no puede ser posterior a hoy.
 - **Entrega:** no puede ser anterior a la recepción ni posterior a hoy.
 - **DNI:** exactamente 8 dígitos.
+- **Mismo DNI, mismo nombre:** si el DNI ya tiene trámites, el programa usa el nombre registrado y no lo vuelve a pedir.
 - **Nombre, tipo y asunto:** obligatorios, máximo 100 caracteres y sin el carácter `|`
   (es el separador del archivo; si se permitiera, el trámite se perdería al recargar).
 - Un trámite ENTREGADO no puede volver a entregarse.
