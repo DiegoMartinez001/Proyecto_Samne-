@@ -13,3 +13,4 @@ Cada decisión indica la fecha, qué se decidió y por qué.
 | 12/11/2026 | Prohibir el carácter `\|` en nombre, tipo y asunto | Se comprobó que un asunto con `\|` hacía que el trámite se borrara del archivo al reiniciar. |
 | 12/11/2026 | Mantener el método burbuja (con salida anticipada) | Es requisito del curso (RF06). Medido: 1 000 trámites se ordenan en ~0,03 s, suficiente para el volumen de Samne. |
 | 12/11/2026 | Pruebas con `unittest` | Viene incluido en Python: no hay que instalar nada en la computadora de la municipalidad. |
+| 21/11/2026 | Reutilizar el nombre ya registrado cuando el DNI tiene trámites | En el archivo real el DNI 47250619 figuraba con dos nombres distintos, lo que partía el historial de una misma persona. |

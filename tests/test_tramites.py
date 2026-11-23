@@ -11,9 +11,9 @@ import tempfile
 import unittest
 
 import almacenamiento
-from tramites import (DNI, ESTADO, FECHA_ENTREGA, buscar_por_codigo,
+from tramites import (DNI, ESTADO, FECHA_ENTREGA, NOMBRE, buscar_por_codigo,
                       buscar_por_dni, crear_tramite, generar_codigo,
-                      marcar_entregado, ordenar_por_dni)
+                      marcar_entregado, nombre_registrado, ordenar_por_dni)
 
 
 def tramite_de_prueba(codigo, dni, estado="PENDIENTE"):
@@ -61,6 +61,29 @@ class PruebasRegistroYBusqueda(unittest.TestCase):
 
     def test_codigo_inexistente(self):                # caso de error
         self.assertIsNone(buscar_por_codigo([], "TRA-0099"))
+
+
+class PruebasNombreRegistrado(unittest.TestCase):
+    """Un mismo DNI debe conservar un solo nombre en el historial."""
+
+    def test_dni_nuevo_no_tiene_nombre(self):         # caso límite
+        lista = [tramite_de_prueba("TRA-0001", "45678912")]
+        self.assertIsNone(nombre_registrado(lista, "11111111"))
+
+    def test_dni_existente_devuelve_su_nombre(self):  # caso normal
+        lista = []
+        crear_tramite(lista, "01/10/2026", "47250619", "Diego Martinez Guevara",
+                      "Carta", "Donacion de panes")
+        self.assertEqual(nombre_registrado(lista, "47250619"),
+                         "Diego Martinez Guevara")
+
+    def test_nombres_distintos_toma_el_mas_antiguo(self):  # caso de error previo
+        lista = [tramite_de_prueba("TRA-0009", "47250619"),
+                 tramite_de_prueba("TRA-0006", "47250619")]
+        lista[0][NOMBRE] = "DIEGO MARTINEZ GUEVARA"
+        lista[1][NOMBRE] = "Deigo Martinwz Guevara"
+        self.assertEqual(nombre_registrado(lista, "47250619"),
+                         "Deigo Martinwz Guevara")
 
 
 class PruebasActualizarEstado(unittest.TestCase):
