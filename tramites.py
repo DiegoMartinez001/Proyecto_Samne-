@@ -91,6 +91,33 @@ def buscar_por_dni(tramites: list[list[str]], dni: str) -> list[list[str]]:
     return [tramite for tramite in tramites if tramite[DNI] == dni]
 
 
+def nombre_registrado(tramites: list[list[str]], dni: str) -> str | None:
+    """
+    Devuelve el nombre con el que ya está registrado un DNI.
+
+    Evita que una misma persona quede con nombres distintos en el historial
+    (por ejemplo "Deigo Martínwz Guevara" y "DIEGO MARTINEZ GUEVARA" con el
+    mismo DNI). Si el DNI tiene varios trámites, se toma el nombre del más
+    antiguo, es decir, el de código menor.
+
+    Parámetros:
+        tramites (list[list[str]]): trámites registrados.
+        dni (str): DNI del solicitante.
+
+    Retorna:
+        str | None: el nombre registrado, o None si el DNI es nuevo.
+
+    Ejemplo:
+        >>> nombre_registrado([], "45678912") is None
+        True
+    """
+    encontrados = buscar_por_dni(tramites, dni)
+    if not encontrados:
+        return None
+    mas_antiguo = min(encontrados, key=lambda tramite: tramite[CODIGO])
+    return mas_antiguo[NOMBRE]
+
+
 def buscar_por_codigo(tramites: list[list[str]], codigo: str) -> list[str] | None:
     """
     Busca un trámite por su código.

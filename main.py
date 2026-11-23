@@ -70,13 +70,26 @@ def mostrar_detalle(tramite: list[str]) -> None:
 # ---------------------------------------------------------------------------
 
 def registrar_tramite(lista: list[list[str]]) -> None:
-    """Opción 1: pide y valida los datos, crea el trámite y lo guarda."""
+    """
+    Opción 1: pide y valida los datos, crea el trámite y lo guarda.
+
+    Si el DNI ya tiene trámites, no vuelve a pedir el nombre: usa el que
+    ya está registrado (ver tramites.nombre_registrado).
+    """
     print("\n--- REGISTRAR TRÁMITE ---")
     fecha = pedir_dato("Fecha de recepción (dd/mm/aaaa): ",
                        validar_fecha_recepcion,
                        "Fecha incorrecta. No se permiten fechas futuras ni inválidas.")
     dni = pedir_dato("DNI: ", validar_dni, "El DNI debe tener 8 dígitos.")
-    nombre = pedir_texto_obligatorio("Nombre del solicitante: ")
+
+    # Si el DNI ya tiene trámites, se reutiliza su nombre para que el
+    # historial de una persona no quede con nombres distintos.
+    nombre = reglas.nombre_registrado(lista, dni)
+    if nombre is None:
+        nombre = pedir_texto_obligatorio("Nombre del solicitante: ")
+    else:
+        print("DNI ya registrado a nombre de:", nombre)
+        print("Se usará ese nombre para mantener el historial.")
     tipo = pedir_texto_obligatorio("Tipo de trámite: ")
     asunto = pedir_texto_obligatorio("Asunto: ")
 
